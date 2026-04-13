@@ -123,7 +123,6 @@ fi
    Es mejor no descargar archivos demasiado grandes.
 :::
 
-# Mapeo (me salen archivos de entrada que no tengo)
 El objetivo de esta sección es alinear las lecturas cortas al genoma de
 referencia, mediante el programa `bwa`. El archivo final será un archivo BAM
 *ordenado*. Para obtener ese archivo es necesario generar algunos archivos
@@ -133,13 +132,15 @@ comprimida del SAM (todavía no ordenado). La jerarquía de condiciones de ejecu
 siguiente permitirá borrar los archivos auxiliares, para ahorrar espacio, y no tener
 que generarlos de nuevo cada vez que compilemos este documento si el archivo final
 ya está presente en la carpeta de trabajo.
+#primero tengo que descargar la función bwa :
+sudo apt install bwa
 
 ```{bash}
 if [ ! -e DRR025089.bam ]; then
    if [ ! -e DRR025089_unsorted.bam ]; then
       if [ ! -e DRR025089.sam ]; then
          if [ ! -e referencia.fa.bwt ]; then
-           /home/asanloa/anaconda3/bin/bwa index referencia.fa
+           bwa index referencia.fa
          fi
          bwa mem -M -R '@RG\tID:DRR025089\tSM:SAMD00022947' \
                  -o DRR025089.sam \
@@ -206,8 +207,18 @@ plot(COV$cobertura, COV$bases, type = 'l')
 ## Desafíos
 1. La distribución de cobertura tiene una cola larga. ¿Puedes centrar la
    representación gráfica entre 0 y 20? Pista: usa la opción `xlim` de `plot()`.
+   plot(COV$cobertura, COV$bases,
+     type = "l",
+     xlim = c(0, 20))
 2. ¿Qué otras estadísticas crees que vale la pena revisar?
+el número de lecturas duplicadas y la tasa de error de alineamiento.
 3. El genoma de referencia incluye dos plásmidos. ¿La cepa secuenciada los tiene?
+mediante el comando amtools idxstats DRR025089.bam, se obtiene: 
+ENA|CP169752|CP169752.1 9460647 230509  2965
+ENA|CP169753|CP169753.1 440193  965     89
+ENA|CP169754|CP169754.2 122010  112     3
+*       0       0       56574
+Por lo que obtenemos tres contigs: uno de 230509 reads, otro de 965 y otro de 112, por lo que se concluye que la cepa tiene el cromosoma principal y uno de los plásmidos pero no el segundo. 
 4. Visualiza los alineamientos en el terminal con la orden siguiente:
 ```
 samtools tview DRR025089.bam referencia.fa
@@ -215,7 +226,7 @@ samtools tview DRR025089.bam referencia.fa
 :::
 
 # Identificación de variantes
-
+# primero intalamos freebayes: sudo apt install freebayes
 ```{bash}
 if [ ! -e DRR025089.vcf ]; then
    freebayes -p 1 -f referencia.fa DRR025089.bam > DRR025089.vcf
