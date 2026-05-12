@@ -2,9 +2,11 @@
 title: "practica11"
 format: html
 editor: visual
+execute:
+  engine: knitr
 ---
 
-# **Práctia 11. Anotación**
+# **Práctica 11. Anotación**
 
 # **Introducción**
 
@@ -44,8 +46,8 @@ Sabiendo que una forma de hacerlo es la siguiente, incluye la orden en un bloque
 
 Cambiar el nombre de las porteínas
 
-```{python}
-if [ ! -e proteinas.fasta ]; then
+```{bash}
+if [ ! -e proteinas.fasta ]; then 
   awk '(/^>/){split($1, A, /\|/); print ">" A[2]}(/^[^>]/){print $0}' \
   ../../data/uniprotkb_proteome_UP000006548_AND_prot_2026_04_28.fasta > proteinas.fasta
 fi
@@ -63,17 +65,17 @@ fi
 
 Explora los resultados de `RepeatModeler` y trata de contestar las preguntas siguientes.
 
-1.  ¿Cuántas familias de elementos transponibles se han encontrado?
+1.  ¿Cuántas familias de elementos transponibles se han encontrado? 24
 
-    ```{python}
-    grep -c "^>" consensi.fa.classified
-    24
+    ```{bash}
+    grep -c "^>" RepeatMasker_descomprimido/consensi.fa.classified
     ```
 
 2.  ¿Cuánto duró la ejecución del programa?
 
-    ```{python}
-    less rmod.log
+    Se miró el contenido de rmod.log para ver el timpo de ejecución.
+
+    ```{less rmod.log}
     Program Time: 01:02:16 (hh:mm:ss) Elapsed Time
     ```
 
@@ -95,14 +97,15 @@ Encontrarás la carpeta (comprimida) de resultados de `RepeatMasker` en el aul
 
     Para instalarlo se ha hecho:
 
-    ```{python}
+    ```{bash}
+    #| eval: false
     sudo apt-get update
     sudo apt-get install bedtools
     ```
 
 2.  Utiliza el ensamblaje original como archivo FASTA de entrada y el archivo `GFF` que ha producido `RepetaMasker` como coordenadas de las regiones a enmascarar. Lee el manual de `bedtools maskfasta` [en este enlace](https://open.bioqueue.org/home/knowledge/showKnowledge/sig/bedtools-maskfasta) y genera el ensamblaje con máscara suave llamado `At4.soft.fa`.
 
-```{python}
+```{bash}
 bedtools maskfasta \
   -fi ../../results/2026-04-28/asm1/At4.fa \
   -bed  RepeatMaskerResults/RM01/At4.fa.out.gff \
@@ -114,7 +117,8 @@ bedtools maskfasta \
 
 Para ejecutar GALBA ha sido necesario crear algunas variables de entorno que indican donde puede GALBA encontrar un par de ejecutables más. Para facilitar la reproducibilidad, este tipo de definiciones deben aparecer al principio del bloque, donde son más visibles, para que sean fácilmente modificadas cuando las órdenes vayan a ejecutarse en otro ordenador.
 
-```{python}
+```{bash}
+#| eval: false 
 export TSEBRA_PATH=/home/joiglu/bin/TSEBRA/bin/
 export MINIPROTHINT_PATH=/home/joiglu/bin/miniprothint/
 
@@ -127,7 +131,7 @@ galba.pl --species="Arabidopsis thaliana" \
 
 Incluye en tu documento de Quarto un bloque de código (pero no ejecutable, con la opción `eval: false`) como el anterior, donde los *caminos* TSERBA y a MINIPROTHINT se correspondan con tu propia carpeta `bin`, aunque no los tengas instalados.
 
-```{python}
+```{bash}
 #| eval: false
 export TSEBRA_PATH=/home/joiglu/bin/TSEBRA/bin/
 export MINIPROTHINT_PATH=/home/joiglu/bin/miniprothint/
