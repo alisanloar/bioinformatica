@@ -1,0 +1,186 @@
+---
+title: "práctia10"
+format: html
+editor: visual
+execute:
+  engine: knitr
+---
+
+# **Práctica 10. Ensamblaje de genomas**
+
+# **Objetivo**
+
+Ensamblar el genoma de un eucariota diploide con lecturas de PacBio de alta fidelidad.
+
+Preparación:
+
+```{bash}
+if [ ! -d ~/bin ]; then mkdir ~/bin; fi
+cd ~/bin
+git clone https://github.com/chhylp123/hifiasm
+cd hifiasm
+make
+
+```
+
+```{bash}
+echo 'export PATH=$PATH:~/bin/hifiasm' >> ~/.bashrc
+```
+
+A partir de entonces, cada vez que inicies el terminal, `hifiasm` estará en el `PATH`. Pero el terminal desde el cual has ejecutado la orden anterior se abrió antes de modificar `.bashrc`. Para que surta efecto sin tener que cerrar y abrir el terminal, puedes usar la orden `. ~/.bashrc`.
+
+# **Datos**
+
+Vamos a usar lecturas HiFi generadas por Rabanal et al. ([2022](https://aulavirtual.uv.es/pluginfile.php/6018144/mod_resource/content/1/guio-es.html#ref-Rabanal2022)) de un único individuo de la planta *Arabidopsis thaliana*, ecotipo Columbia (Col-0), con la tecnología SMRT de PacBio (proyecto [PRJEB50694](https://www.ebi.ac.uk/ena/browser/view/PRJEB50694)). Los datos seleccionados son solo una parte de los originales y se encuentran en el archivo `At4.10.fa.gz` (46 Mb), disponible en el aula virtual. También está en el [espacio de disco compartido de la Universidad de Valencia](https://disco.uv.es/), dentro del grupo de bioinformática. Este espacio es directamente accesible desde los ordenadores virtuales.
+
+# **Revisión de los datos**
+
+Los datos están en formato FASTA porque contienen sólo lecturas de alta calidad, y `hifiasm` no utiliza la información de las calidades de cada base. El archivo está comprimido. Antes de empezar el ensamblaje deberíamos tener una idea de la cantidad de datos que tenemos. Si lo necesitas, utiliza una inteligencia artificial para responder las preguntas siguientes y anota en un bloque de código las órdenes utilizadas. Puedes hacerlo con instrucciones de Bash o de R, pero R necesitará cargar en memoria el archivo entero, lo que no sería muy práctico si se tratara de un archivo 10 o 50 veces mayor.
+
+**Ejercicio 1**
+
+- ¿Cuántas secuencias contiene el archivo?
+
+  ```{bash}
+  zgrep -c "^>" ../../data/21-04/At4.10.fa.gz
+  ```
+
+  - 13812
+
+- ¿Qué longitudes mínima, media y máxima tienen las secuencias?
+
+  ```{bash}
+  zcat At4.10.fa.gz | awk '/^>/ {if (l>0){s+=l;if(!min||l<min)min=l;if(l>max)max=l;n++} l=0; next} {l+=length($0)} END {s+=l;if(!min||l<min)min=l;if(l>max)max=l;n++; print "Min:",min"\nMean:",s/n"\nMax:",max}'
+  ```
+
+  - Min: 2942
+
+  - Mean: 18143.6
+
+  - Max: 59075
+
+- ¿Cuál es el número total de bases?
+
+  ```{bash}
+  cat At4.10.fa.gz | awk '/^>/ {next} {sum+=length($0)} END {print sum}'
+  ```
+
+  - 250599484
+
+- Si se estimara que el genoma a ensamblar fuera de sólo 19 millones de bases, ¿cuál sería la cobertura esperada?
+
+\- La cobertura total se realiza dividiendo el némero total de bases entre 19.000.000 por lo que la cobertura total es de 13,19.
+
+# **Ensamblaje**
+
+El programa `hifiasm` produce varios archivos de salida. Para tener la carpeta de trabajo ordenada, es recomendable crear un subcarpeta donde poder guardarlos. Si fuéramos a probar más de una estrategia de ensamblado, guardaríamos los resultados de cada intento en una carpeta diferente, que podríamos nombrar `asm1`, `asm2`, etc. Aunque sólo realicemos un ensamblaje, crearemos la carpeta `asm1` para guardar los resultados en ella.
+
+```         
+# Con la ejecución condicional nos ahorramos algún mensaje de error: if [ ! -d asm1 ]; then mkdir asm1; fi
+```
+
+El ensamblaje de estas lecturas puede durar unos minutos. No queremos tener que ejecutarlo cada vez que compilamos el documento de Quarto. Tenemos dos opciones: o bien usamos la directriz `#| cache: true` al principio del bloque de código o bien controlamos directamente la ejecución condicional con Bash. Si usamos el método que ofrece Quarto, aparecerá una nueva carpeta que guarda resultados previos y que estaría bien incluir en el repositorio de Git. Yo prefiero usar Bash:
+
+```{bash}
+if [ ! -e asm1/At4.bp.p_ctg.gfa ]; then    
+    hifiasm -o asm1/At4 -t 2 -f 0 ../../data/21-04/At4.10.fa.gz 2> asm1/hifiasm.log 
+fi
+```
+
+```{HF=~/bin/hifiasm/hifiasm}
+$HF
+```
+
+**Ejercicio 2**
+
+Consulta la ayuda de `hifiasm` (`hifiasm -h`) y contesta las preguntas siguientes:
+
+1.  ¿Los parámetros corresponden al ensamblaje de un genoma haploide o diploide?
+
+    Hisfiasm ensambla genosmas diploides por defecto a no swe que le pongas el comando --n-hap 2, –primary
+
+2.  ¿Qué nivel de eliminación de duplicaciones hemos aplicado? (El paso de eliminar duplicaciones sirve para que las zonas de alta heterocigosidad no sean ensambladas como contigs diferentes).
+
+    La opción -1 controla el nivel de purgado.
+
+3.  Si tuvieramos lecturas ultra-largas, ¿con qué opción o argumento añadiríamos esa información?
+
+Se añade con la opción –ul FILE
+
+# **Evaluación del resultado**
+
+**Ejercicio 3**
+
+Consulta la descripción de los archivos de salida que encontrarás en [este enlace](https://hifiasm.readthedocs.io/en/latest/interpreting-output.html) y contesta las preguntas siguientes:
+
+1.  ¿Dónde están las secuencias que componen el ensamblaje?
+
+    esta en el archivo At4.bp.p_ctg.gfa que es el ensamblaje primario
+
+2.  En los archivos `.gfa`, ¿qué son las líneas que empiezan por ‘A’?
+
+    Son alineaminetos de lecturas a los contigs
+
+3.  ¿Qué información tiene los archivos `.bed`?
+
+    Regiones de baja calidad en el ensamblaje: posiciones de alta inconsistencia, zonas problematicas del ensamblaje y regiones potencialmente erróneas
+
+4.  ¿Cuál es la cobertura media estimada de las secuencias homocigotas?
+
+    ```{cat hifiasm.log}
+    [M::purge_dups] homozygous read coverage threshold: 12
+    ```
+
+5.  ¿Y la de las heterocigotas?
+
+No se imprime directamente pero se puede averiguar porqu een genomas diploides heterocigotos, el pico más pequeño en el gráfico k-mers es aproximadamente la mitad del pico homocigótico, por lo que es 6.
+
+Los ensamblajes primario y por haplotipos se presentan en formato [GFA](https://github.com/GFA-spec/GFA-spec/tree/master). Para extraer las secuencias en formato FASTA podemos usar el pequeño *script* siguiente, en lenguaje [AWK](https://www.gnu.org/software/gawk/manual/gawk.html), desde el terminal de Bash:
+
+```{bash}
+awk '(/^S/){print ">" $2 "\n" $3}' asm1/At4.bp.p_ctg.gfa > asm1/At4.fa
+```
+
+## **Calidad del ensamblaje**
+
+Para obtener las estadísticas del ensamblaje utilizaremos el programa `compleasm` ([Huang and Li 2023](https://aulavirtual.uv.es/pluginfile.php/6018144/mod_resource/content/1/guio-es.html#ref-Huang2023)), que no está instalado en el ordenador virtual. Está programado en Python y depende del módulo `pandas` de Python. En WSL, este módulo o paquete probablemente pueda instalarse con `apt install python3-pandas`. Alternativamente, en los sistemas con `conda` podéis hacer `conda install pandas`. En el ordenador virtual, el módulo `pandas` ya está disponible.
+
+```{bash}
+cd ~/bin
+wget https://github.com/huangnengCSU/compleasm/releases/download/v0.2.7/compleasm-0.2.7_x64-linux.tar.bz2
+tar -jxvf compleasm-0.2.7_x64-linux.tar.bz2
+```
+
+```{bash}
+if [ ! -e asm1_eval/summary.txt ]; then
+   python3 ~/bin/compleasm_kit/compleasm.py run \
+      -t 2 -l brassicales -a asm1/At4.fa -o asm1_eval
+fi
+```
+
+**\
+Ejercicio 4**
+
+Consulta la ayuda de `compleasm.py` y averigua qué significan los argumentos utilizados.
+
+Argumenttos:
+
+- run: ejecutar evaluación del ensamblaje
+
+- -t 2: usar dos hilos
+
+- -l brassicales : base de genes brassicales
+
+- -a asml1/At4.fa: genoma ensamblado a evaluar
+
+- -o asm1_eval: carpeta de resultados
+
+## **Visualización del grafo**
+
+**Ejercicio 5**
+
+Instala `bandage`, carga el grafo del ensamblaje realizado y genera una figura. Puedes añadir la figura al informe HTML mediante la [sitaxis siguiente](https://quarto.org/docs/authoring/figures.html):
+
+```         
+![](figura.png)
+```
