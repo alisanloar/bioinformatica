@@ -36,7 +36,8 @@ la dirección de la API: `https://www.ebi.ac.uk/interpro/api/`
 [@interproAPI]. Por tanto, guardo esta URL básica como cadena de
 caracteres en la variable `API`:
 
-```{r}API <- 'https://www.ebi.ac.uk/interpro/api/'}
+```{r}
+API <- 'https://www.ebi.ac.uk/interpro/api/'
 
 ```
 
@@ -164,8 +165,8 @@ pfam01[['results']]
 pfam01[['results']][['metadata']]
 ```
 
-Los siguientes 20 registros de Pfam se encuentran en `pfam01[['next']]`:
-`r pfam01[['next']]`. Y los podemos descargar igual.
+Los siguientes 20 registros de Pfam se encuentran en `pfam01[['next']]`: https://www.ebi.ac.uk/interpro/api/entry/pfam/?cursor=cD1QRjAwMDIw. 
+Y los podemos descargar igual.
 
 ```{r}
 library('kableExtra')
@@ -364,7 +365,7 @@ kable(flatten(taxon_7742[['results']][['metadata']])) %>%
 *zinc finger, C2HC type* (Pfam PF01530)?
 :::
 Lo primero que tenemos que especificar es el dominio que queremos en pfam(PF01530) y después el taxón(8493). 
-una vez obtenemos la lista, indicamos la variable que queremos evr, en este caso es el número es el número de proteínas que tienen el mismo dominio de zinc
+Una vez obtenemos la lista, indicamos la variable que queremos evr, en este caso es el número es el número de proteínas que tienen el mismo dominio de zinc
 ```{r}
 cocodrilo <- fromJSON(paste0(API, 'entry/pfam/PF01530/taxonomy/uniprot/8493'))
 Dedozinc <- cocodrilo[['metadata']][['counters']][['proteins']]
@@ -441,6 +442,7 @@ comprobarlo con la función `setdiff()`, que devuelve los elementos del
 primer vector que no aparecen en el segundo:
 
 ```{r}
+#| eval: false
 SoloEquinodermos <- setdiff(equinodermata$accession, chordata$accession)
 # Del marco de datos "equinodermata" selecciono las filas que corresponden a los
 # dominios exclusivos de equinodermos, y las filas "accession" y "name":
