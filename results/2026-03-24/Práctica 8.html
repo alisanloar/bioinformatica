@@ -102,7 +102,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><strong>Práctica 8:</strong></p>
-<p>Se me borró la práctica entera así que tengo los resultados pero no sé de donde salen. Creo que hay inconsistencias con mis resultados y lo que tengo puesto ene este docuemnto.</p>
+<p>Se me borró la práctica entera así que tengo los resultados pero no sé de donde salen. Creo que hay inconsistencias con mis resultados y lo que tengo puesto en este docuemnto.</p>
 <p>Descargamos los datos de Uniprot: <em>Buchnera aphidicola</em>&nbsp;(107806) y&nbsp;<em>Blochmannia ocreatus</em>&nbsp;(251538).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>BiocManager<span class="sc">::</span><span class="fu">install</span>(<span class="st">'Biostrings'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -125,15 +125,18 @@ have no source</code></pre>
     rpart, spatial, survival</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Old packages: 'Biobase', 'BiocManager', 'BiocParallel', 'bslib', 'cachem',
-  'cli', 'cpp11', 'DESeq2', 'digest', 'evaluate', 'farver', 'fastmap',
-  'fontawesome', 'formatR', 'fs', 'futile.logger', 'generics', 'ggplot2',
-  'glue', 'gtable', 'here', 'highr', 'htmltools', 'IRanges', 'isoband',
-  'jquerylib', 'jsonlite', 'knitr', 'lambda.r', 'lifecycle', 'locfit',
-  'matrixStats', 'memoise', 'R6', 'rappdirs', 'Rcpp', 'RcppArmadillo',
-  'RcppTOML', 'reticulate', 'rlang', 'rmarkdown', 'rprojroot', 'S4Arrays',
-  'S4Vectors', 'S7', 'sass', 'scales', 'SparseArray', 'tinytex', 'vctrs',
-  'viridisLite', 'withr', 'xfun', 'XVector', 'yaml'</code></pre>
+<pre><code>Old packages: 'ape', 'Biobase', 'BiocManager', 'BiocParallel', 'bslib',
+  'cachem', 'cli', 'cpp11', 'crayon', 'curl', 'DESeq2', 'digest', 'dplyr',
+  'evaluate', 'farver', 'fastmap', 'fontawesome', 'formatR', 'fs',
+  'futile.logger', 'generics', 'ggplot2', 'glue', 'gtable', 'here', 'highr',
+  'htmltools', 'IRanges', 'isoband', 'jquerylib', 'jsonlite', 'kableExtra',
+  'knitr', 'lambda.r', 'lifecycle', 'locfit', 'magrittr', 'matrixStats',
+  'memoise', 'phangorn', 'pillar', 'pkgconfig', 'plyr', 'R6', 'rappdirs',
+  'Rcpp', 'RcppArmadillo', 'RcppTOML', 'reshape2', 'reticulate', 'rlang',
+  'rmarkdown', 'rprojroot', 'rstudioapi', 'S4Arrays', 'S4Vectors', 'S7',
+  'sass', 'scales', 'SparseArray', 'stringr', 'svglite', 'systemfonts',
+  'textshaping', 'tibble', 'tidyselect', 'tinytex', 'utf8', 'vctrs',
+  'viridisLite', 'withr', 'xfun', 'xml2', 'XVector', 'yaml'</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -273,6 +276,24 @@ have no source</code></pre>
 <pre><code>Warning: [psiblast] Query_1 P39615.1 RecName:.. : Composition-based score adjustment conditioned on sequence properties and unconditional composition-based score adjustment is not supported with PSSMs, resetting to default value of standard composition-based statistics </code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Repetimos proceso para Q6UDG6</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">blastdbcmd</span> <span class="at">-db</span> ../../data/24-03/swissprot <span class="at">-entry</span> Q6UDG6 <span class="at">-out</span> Q6UDG6.fa</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Y ahora la usamos como query en psi-blast:</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="ex">psiblast</span> <span class="at">-db</span> ../../data/24-03/swissprot <span class="dt">\</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">-query</span> Q6UDG6.fa <span class="dt">\</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">-out</span> Q6UDG6.blastout.txt <span class="dt">\</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">-evalue</span> 0.1 <span class="dt">\</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">-outfmt</span> 7 <span class="dt">\</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">-inclusion_ethresh</span> 0.001 <span class="dt">\</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">-num_iterations</span> 7 <span class="dt">\</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">-matrix</span> BLOSUM62</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Warning: [psiblast] Query_1 Q6UDG6.1 RecName:.. : Composition-based score adjustment conditioned on sequence properties and unconditional composition-based score adjustment is not supported with PSSMs, resetting to default value of standard composition-based statistics </code></pre>
+</div>
+</div>
+<p>La primera proteína es de Bacillus subtilis mientras que la segunda es de un herpesvirus de los loros amazónicos. Ambas proteínas son la Uracil-N-glycosilase, una enzima que elimina los uracilos de ADN. Aunque provenhas de dos especies distintas se aprecia en la secuencia una parte igual: GQDPY.</p>
 <p><strong>Nota:</strong></p>
 <p>Consulta la ayuda de&nbsp;<code>psiblast</code>&nbsp;y asegúrate de entender para qué sirven los argumentos que hemos usado. Por ejemplo, ¿cuál es la diferencia entre&nbsp;<code>-evalue</code>&nbsp;y&nbsp;<code>-inclusion_ethresh</code>?¿Cómo harías que la búsqueda fuera más sensible todavía?</p>
 <ul>
@@ -287,7 +308,7 @@ have no source</code></pre>
 <h2 class="anchored" data-anchor-id="selección-aleatoria-de-20-queries"><strong>Selección aleatoria de 20 queries</strong></h2>
 <p>Si enviamos 33174 queries a los servidores del NCBI, o bien tardarán muchas horas en devolver los resultados o simplemente interrumpirán el servicio. Cada persona escogerá 20 secuencias al azar mediante las órdenes siguientes, y después compartiremos los resultados para tener una muestra más representativa.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'Biostrings'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">'Biostrings'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Cargando paquete requerido: BiocGenerics</code></pre>
 </div>
@@ -370,37 +391,37 @@ Adjuntando el paquete: 'Biostrings'</code></pre>
 
     strsplit</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>unmapped <span class="ot">&lt;-</span> <span class="fu">readDNAStringSet</span>(<span class="st">'../../data/24-03/contaminacion.fa.gz'</span>)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(unmapped)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>muestra <span class="ot">&lt;-</span> unmapped[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="dv">20</span>)]</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">writeXStringSet</span>(muestra, <span class="st">'muestra.fa'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>unmapped <span class="ot">&lt;-</span> <span class="fu">readDNAStringSet</span>(<span class="st">'../../data/24-03/contaminacion.fa.gz'</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(unmapped)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>muestra <span class="ot">&lt;-</span> unmapped[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="dv">20</span>)]</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="fu">writeXStringSet</span>(muestra, <span class="st">'muestra.fa'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="blastn-remoto" class="level2">
 <h2 class="anchored" data-anchor-id="blastn-remoto"><strong>BLASTN remoto</strong></h2>
 <p>La orden siguiente pide una sola secuencia (la más parecida) y alguna información sobre el alineamiento, para poder garantizar la calidad del resultado.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-e</span> resultado.txt <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">blastn</span> <span class="at">-query</span> muestra.fa <span class="dt">\</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">-db</span> nr <span class="dt">\</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">-out</span> resultado.txt <span class="dt">\</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">-outfmt</span> <span class="st">'6 qaccver saccver length qlen qstart qend evalue bitscore staxid'</span> <span class="dt">\</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">-max_target_seqs</span> 1 <span class="dt">\</span></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">-evalue</span> 0.001 <span class="dt">\</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">-remote</span> <span class="dv">2</span><span class="op">&gt;</span> /dev/null</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">!</span> <span class="ot">-e</span> resultado.txt <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>   <span class="ex">blastn</span> <span class="at">-query</span> muestra.fa <span class="dt">\</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">-db</span> nr <span class="dt">\</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">-out</span> resultado.txt <span class="dt">\</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">-outfmt</span> <span class="st">'6 qaccver saccver length qlen qstart qend evalue bitscore staxid'</span> <span class="dt">\</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">-max_target_seqs</span> 1 <span class="dt">\</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">-evalue</span> 0.001 <span class="dt">\</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">-remote</span> <span class="dv">2</span><span class="op">&gt;</span> /dev/null</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="identificación-taxonómica" class="level2">
 <h2 class="anchored" data-anchor-id="identificación-taxonómica"><strong>Identificación taxonómica</strong></h2>
 <p>La única información taxonómica que podemos obtener de las secuencias encontradas cuando realizamos un BLAST remoto es el identificador taxonómico. Esta restricción tiene por objetivo agilizar el servicio remoto. Ahora es asunto nuestro saber a qué especies corresponden los identificadores, de manera automática. Hay varias opciones. Para no tener que descargar la base de datos taxonómica, intentaremos recuperar la información completa con una nueva consulta remota. Esta vez, con los programas&nbsp;<code>datasets</code>&nbsp;y&nbsp;<code>dataformat</code>&nbsp;de NCBI, que ya conocéis.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraemos los identificadores taxonómicos (columna 9) de "resultado.txt":</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cut</span> <span class="at">-f</span> 9 resultado.txt <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="kw">|</span> <span class="fu">paste</span> <span class="at">-sd</span> <span class="st">','</span> <span class="op">&gt;</span> taxids.txt</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generamos una tabla con información taxonómica de esos identificadores:</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="ex">datasets</span> summary taxonomy taxon <span class="va">$(</span><span class="fu">cat</span> taxids.txt<span class="va">)</span> <span class="at">--as-json-lines</span> <span class="kw">|</span> <span class="dt">\</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="ex">dataformat</span> tsv taxonomy <span class="at">--template</span> tax-summary <span class="op">&gt;</span> taxreport.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extraemos los identificadores taxonómicos (columna 9) de "resultado.txt":</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cut</span> <span class="at">-f</span> 9 resultado.txt <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="kw">|</span> <span class="fu">paste</span> <span class="at">-sd</span> <span class="st">','</span> <span class="op">&gt;</span> taxids.txt</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generamos una tabla con información taxonómica de esos identificadores:</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="ex">datasets</span> summary taxonomy taxon <span class="va">$(</span><span class="fu">cat</span> taxids.txt<span class="va">)</span> <span class="at">--as-json-lines</span> <span class="kw">|</span> <span class="dt">\</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="ex">dataformat</span> tsv taxonomy <span class="at">--template</span> tax-summary <span class="op">&gt;</span> taxreport.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>New version of client (18.26.0) available at https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/LATEST/linux-amd64/datasets.</code></pre>
 </div>

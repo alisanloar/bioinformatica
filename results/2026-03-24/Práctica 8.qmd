@@ -8,7 +8,7 @@ execute:
 
 **Práctica 8:**
 
-Se me borró la práctica entera así que tengo los resultados pero no sé de donde salen. Creo que hay inconsistencias con mis resultados y lo que tengo puesto ene este docuemnto.
+Se me borró la práctica entera así que tengo los resultados pero no sé de donde salen. Creo que hay inconsistencias con mis resultados y lo que tengo puesto en este docuemnto.
 
 Descargamos los datos de Uniprot: *Buchnera aphidicola* (107806) y *Blochmannia ocreatus* (251538).
 
@@ -156,6 +156,23 @@ psiblast -db ../../data/24-03/swissprot \
          -num_iterations 7 \
          -matrix BLOSUM62
 ```
+
+```{bash}
+# Repetimos proceso para Q6UDG6
+blastdbcmd -db ../../data/24-03/swissprot -entry Q6UDG6 -out Q6UDG6.fa
+
+# Y ahora la usamos como query en psi-blast:
+psiblast -db ../../data/24-03/swissprot \
+         -query Q6UDG6.fa \
+         -out Q6UDG6.blastout.txt \
+         -evalue 0.1 \
+         -outfmt 7 \
+         -inclusion_ethresh 0.001 \
+         -num_iterations 7 \
+         -matrix BLOSUM62
+```
+
+La primera proteína es de Bacillus subtilis mientras que la segunda es de un herpesvirus de los loros amazónicos. Ambas proteínas son la Uracil-N-glycosilase, una enzima que elimina los uracilos de ADN. Aunque provenhas de dos especies distintas se aprecia en la secuencia una parte igual: GQDPY.
 
 **Nota:**
 
